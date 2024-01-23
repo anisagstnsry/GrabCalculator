@@ -54,7 +54,6 @@ def write():
         else:
             kategori_policy = "Normal"
 
-    st.write("Kondisi Perjalanan: {}".format(kategori_policy))
     data_kondisi = data_rules[data_rules["Kondisi"] == kategori_policy]
     data_kondisi = data_kondisi[data_kondisi["Kategori Jarak"] == kategori_jarak]
     data_kondisi = data_kondisi[data_kondisi["Rute"] == route]
