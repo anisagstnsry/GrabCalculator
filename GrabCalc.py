@@ -40,45 +40,47 @@ def write():
     tipe_grab = st.selectbox("Tipe transportasi", list_tipegrab)
     total_payment = st.number_input("Total yang dibayarkan (Rp)", min_value = 10000)
     
+    if people_trip > 1:
+        kategori_policy = "Group"
+    else:
+        if condition_trip == "HUJAN":
+            kategori_policy = "Rainy"
+        elif condition_trip == "FORCE MAJOURE":
+            kategori_policy = "Force Majoure"
+        elif kategori_waktu == "Non-Office hour 19.30 - 06.00":
+            kategori_policy = "Non-Office hour 19.30 - 06.00"
+        elif tipe_grab == "Grab Personal (Car)":
+            kategori_policy = "Route Efficiency"
+        else:
+            kategori_policy = "Normal"
+
+    st.write("Kondisi Perjalanan: {}".format(kategori_policy))
+    data_kondisi = data_rules[data_rules["Kondisi"] == kategori_policy]
+    data_kondisi = data_kondisi[data_kondisi["Kategori Jarak"] == kategori_jarak]
+    data_kondisi = data_kondisi[data_kondisi["Rute"] == route]
+    
+    data_kondisi.reset_index(inplace = True)
+    coverage_type = data_kondisi.loc[0, "Coverage"]
+    if data_kondisi.loc[0, "Coverage"] == "Full":
+        covered = total_payment
+    elif data_kondisi.loc[0, "Coverage"] == "Not Covered":
+        covered = 0
+    elif data_kondisi.loc[0, "Coverage"] == "Rumus 1":
+        if route == "Office - Client" or route == "Client - Office":
+            jarak_adi = jarak
+        else:
+            jarak_adi = st.number_input("Jarak perjalanan (KM) dari/ke kantor ADI", min_value = 0)
+        if jarak < jarak_adi:
+            covered = 0
+        else:    
+            covered = jarak_adi*tarifperkm + tarifminimal
+    elif data_kondisi.loc[0, "Coverage"] == "Rumus 2":
+        jarak_client = st.number_input("Jarak perjalanan (KM) dari/ke kantor client", min_value = 0)
+        covered = jarak_client*tarifperkm + tarifminimal
+        
     button_click = st.button("Calculate")
     if button_click:
-        if people_trip > 1:
-            kategori_policy = "Group"
-        else:
-            if condition_trip == "HUJAN":
-                kategori_policy = "Rainy"
-            elif condition_trip == "FORCE MAJOURE":
-                kategori_policy = "Force Majoure"
-            elif kategori_waktu == "Non-Office hour 19.30 - 06.00":
-                kategori_policy = "Non-Office hour 19.30 - 06.00"
-            elif tipe_grab == "Grab Personal (Car)":
-                kategori_policy = "Route Efficiency"
-            else:
-                kategori_policy = "Normal"
-    
         st.write("Kondisi Perjalanan: {}".format(kategori_policy))
-        data_kondisi = data_rules[data_rules["Kondisi"] == kategori_policy]
-        data_kondisi = data_kondisi[data_kondisi["Kategori Jarak"] == kategori_jarak]
-        data_kondisi = data_kondisi[data_kondisi["Rute"] == route]
-        
-        data_kondisi.reset_index(inplace = True)
-        coverage_type = data_kondisi.loc[0, "Coverage"]
-        if data_kondisi.loc[0, "Coverage"] == "Full":
-            covered = total_payment
-        elif data_kondisi.loc[0, "Coverage"] == "Not Covered":
-            covered = 0
-        elif data_kondisi.loc[0, "Coverage"] == "Rumus 1":
-            if route == "Office - Client" or route == "Client - Office":
-                jarak_adi = jarak
-            else:
-                jarak_adi = st.number_input("Jarak perjalanan (KM) dari/ke kantor ADI", min_value = 0)
-            if jarak < jarak_adi:
-                covered = 0
-            else:    
-                covered = jarak_adi*tarifperkm + tarifminimal
-        elif data_kondisi.loc[0, "Coverage"] == "Rumus 2":
-            jarak_client = st.number_input("Jarak perjalanan (KM) dari/ke kantor client", min_value = 0)
-            covered = jarak_client*tarifperkm + tarifminimal
         st.write("Nominal yang akan direimburse kantor adalah {}".format(covered))
     
         document = Document()
