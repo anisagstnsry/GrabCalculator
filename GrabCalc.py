@@ -28,6 +28,7 @@ def write():
     people_trip = st.number_input("Jumlah orang yang berangkat", min_value = 1)
     list_rute = list(data_rules["Rute"].unique())
     route = st.selectbox("Pilih rute", list_rute)
+    pilihan_akses = st.selectbox("Apakah akses transportasi umum terbatas?", ("Ya, e.g. hanya bisa dilalui oleh mobil lewat tol", "Tidak, e.g. masih ada akses kereta/bis"))
     jarak = st.number_input("Jarak perjalanan (KM)", min_value = 1)
     if jarak < 20:
         kategori_jarak = "Kurang dari 20 KM"
@@ -49,6 +50,8 @@ def write():
             kategori_policy = "Force Majoure"
         elif kategori_waktu == "Non-Office hour 19.30 - 06.00":
             kategori_policy = "Non-Office hour 19.30 - 06.00"
+        elif pilihan_akses == "Ya, e.g. hanya bisa dilalui oleh mobil lewat tol":
+            kategori_policy = "Akses Terbatas"
         elif tipe_grab == "Grab Personal (Car)":
             kategori_policy = "Route Efficiency"
         else:
