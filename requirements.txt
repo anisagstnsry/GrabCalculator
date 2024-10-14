@@ -6,3 +6,4 @@ openpyxl==3.1.0
 click==8.1.7
 numpy==1.26.4
 streamlit-nightly==1.39.1.dev20241012
+altair==4.0
