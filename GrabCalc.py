@@ -73,7 +73,7 @@ def write():
         if route == "Office - Client" or route == "Client - Office":
             jarak_adi = jarak
         else:
-            jarak_adi = st.number_input("Jarak perjalanan (KM) dari/ke kantor ADI", min_value = 0)
+            jarak_adi = st.number_input("Jarak perjalanan (KM) dari kantor client ke kantor ADI atau sebaliknya", min_value = 0)
         if jarak < jarak_adi:
             covered = 0
         else:    
